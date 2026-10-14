@@ -43,6 +43,22 @@ Todo código novo deve seguir essa organização.
 | `/carrinho` | Carrinho, com cupom de desconto e sugestões |
 | `/estoque` | Área interna usada pelo time de estoque |
 
+### Produto esgotado com link do marketing
+
+Produtos sem estoque continuam disponíveis por link direto quando o time de marketing divulgar a URL com o `id` do produto.
+
+Exemplo:
+
+```text
+/produto/1
+```
+
+Nessa página, o cliente pode:
+
+- visualizar o produto mesmo quando ele estiver esgotado;
+- preencher nome e e-mail para receber aviso quando o item voltar;
+- acompanhar a lista de espera na área interna do estoque.
+
 ## Ambiente de testes
 
 O rodapé tem um seletor de **cliente de teste**, que simula qual cliente está navegando na loja. Use-o para testar regras que dependem do cliente, como cupons.
