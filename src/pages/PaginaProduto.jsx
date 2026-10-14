@@ -1,9 +1,14 @@
+import { useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { produtoTemPreco } from '../utils/produtos'
 
-export default function PaginaProduto({ produtos, onAdicionar }) {
+export default function PaginaProduto({ produtos, onAdicionar, listaEspera = [], onRegistrarEspera }) {
   const { id } = useParams()
   const produto = produtos.find((item) => item.id === id)
+  const [nome, setNome] = useState('')
+  const [email, setEmail] = useState('')
+  const [mensagemEspera, setMensagemEspera] = useState('')
+  const [sucessoEspera, setSucessoEspera] = useState(false)
 
   if (!produto) {
     return (
@@ -17,10 +22,39 @@ export default function PaginaProduto({ produtos, onAdicionar }) {
   }
 
   const semPreco = !produtoTemPreco(produto)
+  const esgotado = produto.estoque === 0
 
   const relacionados = produtos
     .filter((item) => item.category === produto.category && item.id !== produto.id)
     .slice(0, 4)
+
+  const listaEsperaProduto = listaEspera.filter((item) => item.produtoId === produto.id)
+
+  function handleRegistrarEspera(event) {
+    event.preventDefault()
+
+    const nomeFormatado = nome.trim()
+    const emailFormatado = email.trim()
+
+    if (!nomeFormatado || !emailFormatado) {
+      setSucessoEspera(false)
+      setMensagemEspera('Preencha seu nome e e-mail para receber o aviso.')
+      return
+    }
+
+    const foiAdicionado = onRegistrarEspera({ produtoId: produto.id, nome: nomeFormatado, email: emailFormatado })
+
+    if (!foiAdicionado) {
+      setSucessoEspera(false)
+      setMensagemEspera('Você já está na lista de espera para este produto.')
+      return
+    }
+
+    setNome('')
+    setEmail('')
+    setSucessoEspera(true)
+    setMensagemEspera('Você entrou na lista de espera. Vamos avisar por e-mail quando o produto voltar.')
+  }
 
   return (
     <section>
@@ -45,16 +79,68 @@ export default function PaginaProduto({ produtos, onAdicionar }) {
           </p>
           <p className="detalhe-descricao">{produto.description}</p>
           <p className="detalhe-estoque">
-            {semPreco ? 'Produto indisponível no momento' : `${produto.estoque} unidades disponíveis`}
+            {semPreco
+              ? 'Produto indisponível no momento'
+              : esgotado
+                ? 'Produto esgotado'
+                : `${produto.estoque} unidades disponíveis`}
           </p>
 
           <button
             className="botao botao-grande"
             onClick={() => onAdicionar(produto)}
-            disabled={semPreco || produto.estoque === 0}
+            disabled={semPreco || esgotado}
           >
-            {semPreco ? 'Indisponível' : 'Adicionar ao carrinho'}
+            {semPreco ? 'Indisponível' : esgotado ? 'Esgotado' : 'Adicionar ao carrinho'}
           </button>
+
+          {esgotado && (
+            <div className="aviso-esgotado">
+              <h2>Receber aviso quando voltar</h2>
+              <p>
+                Deixe seu nome e e-mail para ser avisado assim que este produto estiver disponível
+                novamente.
+              </p>
+
+              <form className="formulario-espera" onSubmit={handleRegistrarEspera}>
+                <label className="campo">
+                  <span>Nome</span>
+                  <input
+                    type="text"
+                    value={nome}
+                    onChange={(event) => setNome(event.target.value)}
+                    placeholder="Seu nome"
+                  />
+                </label>
+
+                <label className="campo">
+                  <span>E-mail</span>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="seu@email.com"
+                  />
+                </label>
+
+                <button type="submit" className="botao">
+                  Me avisem quando voltar
+                </button>
+              </form>
+
+              {mensagemEspera && (
+                <p className={sucessoEspera ? 'mensagem-sucesso' : 'mensagem-erro'}>
+                  {mensagemEspera}
+                </p>
+              )}
+
+              {listaEsperaProduto.length > 0 && (
+                <p className="lista-espera-contador">
+                  {listaEsperaProduto.length} pessoa(s) já estão na fila para este produto.
+                </p>
+              )}
+            </div>
+          )}
 
           <ul className="detalhe-garantias">
             <li>Troca grátis em até 30 dias</li>

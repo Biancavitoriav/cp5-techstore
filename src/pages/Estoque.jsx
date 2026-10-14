@@ -1,7 +1,15 @@
 // Página usada pelo time de estoque para acompanhar a quantidade de cada produto
-export default function Estoque({ produtos }) {
+export default function Estoque({ produtos, listaEspera = [] }) {
   // slice cria uma cópia, para o sort não alterar a lista original
   const ordenados = produtos.slice().sort((a, b) => a.estoque - b.estoque)
+  const esperaPorProduto = listaEspera.reduce((acumulador, item) => {
+    if (!acumulador[item.produtoId]) {
+      acumulador[item.produtoId] = []
+    }
+
+    acumulador[item.produtoId].push({ nome: item.nome, email: item.email })
+    return acumulador
+  }, {})
 
   return (
     <section>
@@ -17,6 +25,7 @@ export default function Estoque({ produtos }) {
               <th>Categoria</th>
               <th>Unidades</th>
               <th>Situação</th>
+              <th>Lista de espera</th>
             </tr>
           </thead>
           <tbody>
@@ -31,6 +40,24 @@ export default function Estoque({ produtos }) {
                     <span className="selo selo-alerta">Repor</span>
                   )}
                   {produto.estoque >= 5 && <span className="selo selo-ok">OK</span>}
+                </td>
+                <td>
+                  {produto.estoque === 0 ? (
+                    <ul className="lista-espera-estoque">
+                      {(esperaPorProduto[produto.id] ?? []).length > 0 ? (
+                        (esperaPorProduto[produto.id] ?? []).map((cliente, index) => (
+                          <li key={`${produto.id}-${cliente.email}-${index}`}>
+                            <strong>{cliente.nome}</strong>
+                            <span>{cliente.email}</span>
+                          </li>
+                        ))
+                      ) : (
+                        <li className="lista-espera-vazia">Nenhuma pessoa na fila</li>
+                      )}
+                    </ul>
+                  ) : (
+                    <span className="texto-suave">—</span>
+                  )}
                 </td>
               </tr>
             ))}

@@ -18,6 +18,18 @@ export default function App() {
   const [carrinho, setCarrinho] = useState([])
   const [clientes, setClientes] = useState([])
   const [clienteAtualId, setClienteAtualId] = useState(null)
+  const [listaEspera, setListaEspera] = useState(() => {
+    try {
+      const salvos = JSON.parse(localStorage.getItem('techstore-lista-espera') ?? '[]')
+      return Array.isArray(salvos) ? salvos : []
+    } catch {
+      return []
+    }
+  })
+
+  useEffect(() => {
+    localStorage.setItem('techstore-lista-espera', JSON.stringify(listaEspera))
+  }, [listaEspera])
 
   useEffect(() => {
     buscarProdutos()
@@ -37,6 +49,31 @@ export default function App() {
     if (!produtoTemPreco(produto)) return
 
     setCarrinho((itensAtuais) => itensAtuais.concat(produto))
+  }
+
+  function registrarEspera({ produtoId, nome, email }) {
+    const emailNormalizado = String(email).trim().toLowerCase()
+    let jaRegistrado = false
+
+    setListaEspera((atual) => {
+      jaRegistrado = atual.some(
+        (item) => item.produtoId === produtoId && item.email.toLowerCase() === emailNormalizado
+      )
+
+      if (jaRegistrado) return atual
+
+      return [
+        ...atual,
+        {
+          id: `${produtoId}-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+          produtoId,
+          nome: String(nome).trim(),
+          email: String(email).trim(),
+        },
+      ]
+    })
+
+    return !jaRegistrado
   }
 
   function removerUmaUnidade(produtoId) {
@@ -73,7 +110,12 @@ export default function App() {
             <Route
               path="/produto/:id"
               element={
-                <PaginaProduto produtos={produtosDisponiveis} onAdicionar={adicionarAoCarrinho} />
+                <PaginaProduto
+                  produtos={produtos}
+                  onAdicionar={adicionarAoCarrinho}
+                  listaEspera={listaEspera}
+                  onRegistrarEspera={registrarEspera}
+                />
               }
             />
             <Route
@@ -88,7 +130,10 @@ export default function App() {
                 />
               }
             />
-            <Route path="/estoque" element={<Estoque produtos={produtos} />} />
+            <Route
+              path="/estoque"
+              element={<Estoque produtos={produtos} listaEspera={listaEspera} />}
+            />
           </Routes>
         )}
       </main>
