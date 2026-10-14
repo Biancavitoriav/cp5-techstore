@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router'
-import { produtoTemPreco } from '../utils/produtos'
+import ProdutoCard from '../components/ProdutoCard'
+import { formatarPreco } from '../utils/formatarPreco'
+import { filtrarProdutosDisponiveis, produtoTemPreco } from '../utils/produtos'
 
 export default function PaginaProduto({ produtos, onAdicionar, listaEspera = [], onRegistrarEspera }) {
   const { id } = useParams()
@@ -24,7 +26,7 @@ export default function PaginaProduto({ produtos, onAdicionar, listaEspera = [],
   const semPreco = !produtoTemPreco(produto)
   const esgotado = produto.estoque === 0
 
-  const relacionados = produtos
+  const relacionados = filtrarProdutosDisponiveis(produtos)
     .filter((item) => item.category === produto.category && item.id !== produto.id)
     .slice(0, 4)
 
@@ -75,7 +77,7 @@ export default function PaginaProduto({ produtos, onAdicionar, listaEspera = [],
             ★ {produto.rating.rate} <span>({produto.rating.count} avaliações)</span>
           </p>
           <p className="detalhe-preco">
-            {semPreco ? 'Preço indisponível' : `R$ ${produto.price.toFixed(2).replace('.', ',')}`}
+            {semPreco ? 'Preço indisponível' : formatarPreco(produto.price)}
           </p>
           <p className="detalhe-descricao">{produto.description}</p>
           <p className="detalhe-estoque">
@@ -152,20 +154,7 @@ export default function PaginaProduto({ produtos, onAdicionar, listaEspera = [],
       <h2>Produtos relacionados</h2>
       <div className="grade">
         {relacionados.map((item) => (
-          <article key={item.id} className="card">
-            <Link to={`/produto/${item.id}`} className="card-link">
-              <div className="card-imagem-moldura">
-                <img src={item.image} alt={item.title} className="card-imagem" />
-              </div>
-              <h3 className="card-titulo">{item.title}</h3>
-            </Link>
-            <p className="preco">
-              {produtoTemPreco(item) ? `R$ ${Number(item.price).toFixed(2).replace('.', ',')}` : 'Preço indisponível'}
-            </p>
-            <button className="botao" onClick={() => onAdicionar(item)} disabled={!produtoTemPreco(item)}>
-              {produtoTemPreco(item) ? 'Adicionar ao carrinho' : 'Indisponível'}
-            </button>
-          </article>
+          <ProdutoCard key={item.id} produto={item} onAdicionar={onAdicionar} />
         ))}
       </div>
     </section>
