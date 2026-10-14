@@ -1,7 +1,12 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
 import ProdutoCard from '../components/ProdutoCard'
-import { agruparItens, calcularTotal } from '../utils/carrinho'
+import {
+  agruparItens,
+  calcularRestanteParaFreteGratis,
+  calcularTotal,
+  temFreteGratis,
+} from '../utils/carrinho'
 import { validarCupom } from '../utils/cupons'
 import { formatarPreco } from '../utils/formatarPreco'
 import { filtrarProdutosDisponiveis } from '../utils/produtos'
@@ -14,6 +19,8 @@ export default function Carrinho({ carrinho, produtos, clienteAtual, onAdicionar
   const itens = agruparItens(carrinho)
   const total = calcularTotal(carrinho)
   const totalComDesconto = cupomAplicado ? total * (1 - cupomAplicado.desconto) : total
+  const freteGratis = temFreteGratis(carrinho)
+  const restanteParaFreteGratis = calcularRestanteParaFreteGratis(carrinho)
 
   const sugestoes = filtrarProdutosDisponiveis(produtos)
     .filter((produto) => !carrinho.find((item) => item.id === produto.id))
@@ -87,6 +94,12 @@ export default function Carrinho({ carrinho, produtos, clienteAtual, onAdicionar
             </div>
             {mensagemCupom && <p className="mensagem-cupom">{mensagemCupom}</p>}
           </form>
+
+          <p className={freteGratis ? 'mensagem-frete mensagem-frete-gratis' : 'mensagem-frete'}>
+            {freteGratis
+              ? 'Você ganhou frete grátis!'
+              : `Falta ${formatarPreco(restanteParaFreteGratis)} para ganhar frete grátis.`}
+          </p>
 
           {cupomAplicado && (
             <p className="resumo-linha">

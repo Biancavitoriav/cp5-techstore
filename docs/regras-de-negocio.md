@@ -4,7 +4,7 @@
 
 ## Frete grátis
 
-Produtos com preço acima de R$ 100 têm frete grátis e exibem o selo "Frete grátis".
+A campanha de frete grátis vale para compras acima de R$ 200 no valor final. Quando o cliente ainda não atingir esse valor, a loja deve informar quanto falta para conquistar o frete grátis.
 
 ## Cupons
 

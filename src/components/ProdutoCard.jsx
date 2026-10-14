@@ -6,6 +6,7 @@ export default function ProdutoCard({ produto, onAdicionar }) {
   const semPreco = !produtoTemPreco(produto)
   const esgotado = produto.estoque === 0
   const indisponivel = semPreco || esgotado
+  const freteGratisNoProduto = produtoTemPreco(produto) && Number(produto.price) >= 200
 
   return (
     <article className="card">
@@ -30,9 +31,7 @@ export default function ProdutoCard({ produto, onAdicionar }) {
       </div>
 
       <div className="card-selos">
-        {produtoTemPreco(produto) && produto.price > 100 && (
-          <span className="selo selo-frete">Frete grátis</span>
-        )}
+        {freteGratisNoProduto && <span className="selo selo-frete">Frete grátis</span>}
         {semPreco && <span className="selo selo-esgotado">Sem preço</span>}
         {esgotado && <span className="selo selo-esgotado">Esgotado</span>}
       </div>

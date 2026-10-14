@@ -813,6 +813,17 @@ h2 {
   font-weight: 600;
 }
 
+.mensagem-frete {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--cor-frete);
+}
+
+.mensagem-frete-gratis {
+  color: var(--cor-frete);
+}
+
 .resumo-linha,
 .total {
   display: flex;
