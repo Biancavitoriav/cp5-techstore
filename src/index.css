@@ -218,6 +218,7 @@ h2 {
 }
 
 .mini-carrinho {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--espaco-2);
@@ -226,10 +227,17 @@ h2 {
   border-radius: var(--raio);
   font-weight: 600;
   font-size: 0.9rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .mini-carrinho:hover {
   border-color: var(--cor-texto);
+  box-shadow: 0 4px 12px rgba(21, 23, 28, 0.08);
+}
+
+.mini-carrinho-com-itens {
+  border-color: rgba(31, 107, 74, 0.35);
+  background: rgba(31, 107, 74, 0.04);
 }
 
 .mini-carrinho-icone {
@@ -256,6 +264,24 @@ h2 {
 .mini-carrinho-texto small {
   font-weight: 500;
   color: var(--cor-texto-suave);
+}
+
+.mini-carrinho-badge {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  min-width: 1.3rem;
+  height: 1.3rem;
+  display: grid;
+  place-items: center;
+  padding: 0 0.35rem;
+  background: var(--cor-frete);
+  color: #fff;
+  border-radius: 999px;
+  border: 2px solid var(--cor-superficie);
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1;
 }
 
 /* Vitrine */
@@ -434,6 +460,20 @@ h2 {
   color: var(--cor-frete);
 }
 
+.card-quantidade {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--cor-frete);
+}
+
+.card-quantidade-destaque {
+  padding: 0.35rem 0.5rem;
+  background: var(--cor-frete-fundo);
+  border: 1px solid rgba(31, 107, 74, 0.16);
+  border-radius: var(--raio-pequeno);
+}
+
 /* Botões */
 
 .botao {
@@ -454,14 +494,16 @@ h2 {
 }
 
 .botao-ativo {
-  background: var(--cor-moldura);
-  border-color: var(--cor-moldura);
-  color: var(--cor-texto-suave);
+  background: var(--cor-frete);
+  border-color: var(--cor-frete);
+  color: #fff;
   cursor: pointer;
+  box-shadow: 0 8px 18px rgba(31, 107, 74, 0.2);
 }
 
 .botao-ativo:hover {
-  background: var(--cor-moldura);
+  background: #184f3d;
+  border-color: #184f3d;
 }
 
 .botao:disabled {

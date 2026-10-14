@@ -4,7 +4,14 @@ import ProdutoCard from '../components/ProdutoCard'
 import { formatarPreco } from '../utils/formatarPreco'
 import { filtrarProdutosDisponiveis, produtoTemPreco } from '../utils/produtos'
 
-export default function PaginaProduto({ produtos, onAdicionar, listaEspera = [], onRegistrarEspera }) {
+export default function PaginaProduto({
+  carrinho = [],
+  produtos,
+  onAdicionar,
+  onRemover,
+  listaEspera = [],
+  onRegistrarEspera,
+}) {
   const { id } = useParams()
   const produto = produtos.find((item) => item.id === id)
   const [nome, setNome] = useState('')
@@ -25,6 +32,7 @@ export default function PaginaProduto({ produtos, onAdicionar, listaEspera = [],
 
   const semPreco = !produtoTemPreco(produto)
   const esgotado = produto.estoque === 0
+  const quantidadeNoCarrinho = carrinho.filter((item) => item.id === produto.id).length
 
   const relacionados = filtrarProdutosDisponiveis(produtos)
     .filter((item) => item.category === produto.category && item.id !== produto.id)
@@ -89,12 +97,18 @@ export default function PaginaProduto({ produtos, onAdicionar, listaEspera = [],
           </p>
 
           <button
-            className="botao botao-grande"
+            className={`botao botao-grande ${quantidadeNoCarrinho > 0 ? 'botao-ativo' : ''}`}
             onClick={() => onAdicionar(produto)}
             disabled={semPreco || esgotado}
           >
-            {semPreco ? 'Indisponível' : esgotado ? 'Esgotado' : 'Adicionar ao carrinho'}
+            {semPreco ? 'Indisponível' : esgotado ? 'Esgotado' : quantidadeNoCarrinho > 0 ? 'Adicionar mais' : 'Adicionar ao carrinho'}
           </button>
+
+          {quantidadeNoCarrinho > 0 && (
+            <p className="card-quantidade card-quantidade-destaque" aria-live="polite">
+              {quantidadeNoCarrinho} unidade{quantidadeNoCarrinho === 1 ? '' : 's'} no carrinho
+            </p>
+          )}
 
           {esgotado && (
             <div className="aviso-esgotado">

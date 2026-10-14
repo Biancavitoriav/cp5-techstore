@@ -77,17 +77,17 @@ export default function App() {
   }
 
   function removerUmaUnidade(produtoId) {
-    // Remove só a primeira unidade encontrada do produto
-    let removido = false
-    setCarrinho(
-      carrinho.filter((produto) => {
+    setCarrinho((itensAtuais) => {
+      let removido = false
+
+      return itensAtuais.filter((produto) => {
         if (!removido && produto.id === produtoId) {
           removido = true
           return false
         }
         return true
       })
-    )
+    })
   }
 
   const clienteAtual = clientes.find((cliente) => cliente.id === clienteAtualId)
@@ -105,14 +105,23 @@ export default function App() {
           <Routes>
             <Route
               path="/"
-              element={<Loja produtos={produtosDisponiveis} onAdicionar={adicionarAoCarrinho} />}
+              element={
+                <Loja
+                  carrinho={carrinho}
+                  produtos={produtosDisponiveis}
+                  onAdicionar={adicionarAoCarrinho}
+                  onRemover={removerUmaUnidade}
+                />
+              }
             />
             <Route
               path="/produto/:id"
               element={
                 <PaginaProduto
+                  carrinho={carrinho}
                   produtos={produtos}
                   onAdicionar={adicionarAoCarrinho}
+                  onRemover={removerUmaUnidade}
                   listaEspera={listaEspera}
                   onRegistrarEspera={registrarEspera}
                 />

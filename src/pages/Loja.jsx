@@ -10,7 +10,7 @@ const CATEGORIAS = [
   { id: 'casa', nome: 'Casa' },
 ]
 
-export default function Loja({ produtos, onAdicionar }) {
+export default function Loja({ carrinho = [], produtos, onAdicionar, onRemover }) {
   const [categoria, setCategoria] = useState('todas')
   const [produtosVisiveis, setProdutosVisiveis] = useState(() => filtrarProdutosDisponiveis(produtos))
 
@@ -46,7 +46,13 @@ export default function Loja({ produtos, onAdicionar }) {
 
       <div className="grade">
         {produtosVisiveis.map((produto) => (
-          <ProdutoCard key={produto.id} produto={produto} onAdicionar={onAdicionar} />
+          <ProdutoCard
+            key={produto.id}
+            produto={produto}
+            onAdicionar={onAdicionar}
+            onRemover={onRemover}
+            quantidadeNoCarrinho={carrinho.filter((item) => item.id === produto.id).length}
+          />
         ))}
       </div>
     </section>

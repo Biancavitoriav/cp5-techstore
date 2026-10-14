@@ -117,7 +117,13 @@ export default function Carrinho({ carrinho, produtos, clienteAtual, onAdicionar
       <h2>Você também pode gostar</h2>
       <div className="grade">
         {sugestoes.map((produto) => (
-          <ProdutoCard key={produto.id} produto={produto} onAdicionar={onAdicionar} />
+          <ProdutoCard
+            key={produto.id}
+            produto={produto}
+            onAdicionar={onAdicionar}
+            onRemover={onRemover}
+            quantidadeNoCarrinho={carrinho.filter((item) => item.id === produto.id).length}
+          />
         ))}
       </div>
     </section>
