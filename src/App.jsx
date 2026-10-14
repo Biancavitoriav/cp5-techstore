@@ -9,6 +9,7 @@ import Carrinho from './pages/Carrinho'
 import Estoque from './pages/Estoque'
 import { buscarProdutos } from './services/produtos'
 import { buscarClientes } from './services/clientes'
+import { produtoTemPreco, filtrarProdutosDisponiveis } from './utils/produtos'
 
 export default function App() {
   const [produtos, setProdutos] = useState([])
@@ -30,7 +31,11 @@ export default function App() {
     })
   }, [])
 
+  const produtosDisponiveis = filtrarProdutosDisponiveis(produtos)
+
   function adicionarAoCarrinho(produto) {
+    if (!produtoTemPreco(produto)) return
+
     setCarrinho((itensAtuais) => itensAtuais.concat(produto))
   }
 
@@ -63,18 +68,20 @@ export default function App() {
           <Routes>
             <Route
               path="/"
-              element={<Loja produtos={produtos} onAdicionar={adicionarAoCarrinho} />}
+              element={<Loja produtos={produtosDisponiveis} onAdicionar={adicionarAoCarrinho} />}
             />
             <Route
               path="/produto/:id"
-              element={<PaginaProduto produtos={produtos} onAdicionar={adicionarAoCarrinho} />}
+              element={
+                <PaginaProduto produtos={produtosDisponiveis} onAdicionar={adicionarAoCarrinho} />
+              }
             />
             <Route
               path="/carrinho"
               element={
                 <Carrinho
                   carrinho={carrinho}
-                  produtos={produtos}
+                  produtos={produtosDisponiveis}
                   clienteAtual={clienteAtual}
                   onAdicionar={adicionarAoCarrinho}
                   onRemover={removerUmaUnidade}

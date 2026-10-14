@@ -1,6 +1,9 @@
 import { formatarPreco } from '../utils/formatarPreco'
+import { produtoTemPreco } from '../utils/produtos'
 
 export default function SugestaoItem({ produto, onAdicionar }) {
+  const semPreco = !produtoTemPreco(produto)
+
   return (
     <div className="sugestao">
       <div className="sugestao-imagem-moldura">
@@ -8,10 +11,12 @@ export default function SugestaoItem({ produto, onAdicionar }) {
       </div>
       <div className="sugestao-info">
         <p className="sugestao-titulo">{produto.title}</p>
-        <p className="preco preco-pequeno">{formatarPreco(produto.price)}</p>
+        <p className="preco preco-pequeno">
+          {semPreco ? 'Preço indisponível' : formatarPreco(produto.price)}
+        </p>
       </div>
-      <button className="botao botao-pequeno" onClick={() => onAdicionar(produto)}>
-        Comprar
+      <button className="botao botao-pequeno" onClick={() => onAdicionar(produto)} disabled={semPreco}>
+        {semPreco ? 'Indisponível' : 'Comprar'}
       </button>
     </div>
   )

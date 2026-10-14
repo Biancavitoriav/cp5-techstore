@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router'
+import { produtoTemPreco } from '../utils/produtos'
 
 export default function PaginaProduto({ produtos, onAdicionar }) {
   const { id } = useParams()
@@ -7,13 +8,15 @@ export default function PaginaProduto({ produtos, onAdicionar }) {
   if (!produto) {
     return (
       <div className="estado-vazio">
-        <p>Produto não encontrado.</p>
+        <p>Produto não encontrado ou indisponível no momento.</p>
         <Link to="/" className="botao botao-secundario">
           Voltar para a loja
         </Link>
       </div>
     )
   }
+
+  const semPreco = !produtoTemPreco(produto)
 
   const relacionados = produtos
     .filter((item) => item.category === produto.category && item.id !== produto.id)
@@ -37,16 +40,20 @@ export default function PaginaProduto({ produtos, onAdicionar }) {
           <p className="card-avaliacao">
             ★ {produto.rating.rate} <span>({produto.rating.count} avaliações)</span>
           </p>
-          <p className="detalhe-preco">R$ {produto.price.toFixed(2).replace('.', ',')}</p>
+          <p className="detalhe-preco">
+            {semPreco ? 'Preço indisponível' : `R$ ${produto.price.toFixed(2).replace('.', ',')}`}
+          </p>
           <p className="detalhe-descricao">{produto.description}</p>
-          <p className="detalhe-estoque">{produto.estoque} unidades disponíveis</p>
+          <p className="detalhe-estoque">
+            {semPreco ? 'Produto indisponível no momento' : `${produto.estoque} unidades disponíveis`}
+          </p>
 
           <button
             className="botao botao-grande"
             onClick={() => onAdicionar(produto)}
-            disabled={produto.estoque === 0}
+            disabled={semPreco || produto.estoque === 0}
           >
-            Adicionar ao carrinho
+            {semPreco ? 'Indisponível' : 'Adicionar ao carrinho'}
           </button>
 
           <ul className="detalhe-garantias">
@@ -66,9 +73,11 @@ export default function PaginaProduto({ produtos, onAdicionar }) {
               </div>
               <h3 className="card-titulo">{item.title}</h3>
             </Link>
-            <p className="preco">R$ {Number(item.price).toFixed(2).replace('.', ',')}</p>
-            <button className="botao" onClick={() => onAdicionar(item)}>
-              Adicionar ao carrinho
+            <p className="preco">
+              {produtoTemPreco(item) ? `R$ ${Number(item.price).toFixed(2).replace('.', ',')}` : 'Preço indisponível'}
+            </p>
+            <button className="botao" onClick={() => onAdicionar(item)} disabled={!produtoTemPreco(item)}>
+              {produtoTemPreco(item) ? 'Adicionar ao carrinho' : 'Indisponível'}
             </button>
           </article>
         ))}
