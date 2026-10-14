@@ -474,6 +474,37 @@ h2 {
   border-radius: var(--raio-pequeno);
 }
 
+.card-acoes {
+  display: flex;
+  align-items: stretch;
+  gap: var(--espaco-2);
+  margin-top: auto;
+}
+
+.card-acoes .botao {
+  flex: 1;
+  margin-top: 0;
+}
+
+.botao-remover {
+  flex-shrink: 0;
+  width: 2.65rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(185, 53, 35, 0.25);
+  background: rgba(217, 69, 43, 0.08);
+  color: var(--cor-destaque);
+  border-radius: var(--raio-pequeno);
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.botao-remover:hover {
+  background: rgba(217, 69, 43, 0.14);
+}
+
 /* Botões */
 
 .botao {
