@@ -1,8 +1,13 @@
+import { normalizarPreco } from './formatarPreco'
+
 // O carrinho guarda uma entrada por unidade adicionada.
 // Ex.: duas camisetas iguais = o mesmo produto duas vezes no array.
 
 export function calcularTotal(carrinho) {
-  return carrinho.reduce((total, produto) => total + produto.price, 0)
+  return carrinho.reduce((total, produto) => {
+    const preco = normalizarPreco(produto?.price ?? produto?.preco)
+    return total + preco
+  }, 0)
 }
 
 export function agruparItens(carrinho) {

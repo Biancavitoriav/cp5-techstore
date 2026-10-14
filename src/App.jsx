@@ -31,7 +31,7 @@ export default function App() {
   }, [])
 
   function adicionarAoCarrinho(produto) {
-    setCarrinho(carrinho.concat(produto))
+    setCarrinho((itensAtuais) => itensAtuais.concat(produto))
   }
 
   function removerUmaUnidade(produtoId) {

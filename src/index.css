@@ -395,7 +395,7 @@ h2 {
   font-size: 0.85rem;
 }
 
-.preco-original + .preco {
+.preco-original+.preco {
   color: var(--cor-destaque);
 }
 
@@ -451,6 +451,17 @@ h2 {
 
 .botao:hover {
   background: #2c2f37;
+}
+
+.botao-ativo {
+  background: var(--cor-moldura);
+  border-color: var(--cor-moldura);
+  color: var(--cor-texto-suave);
+  cursor: pointer;
+}
+
+.botao-ativo:hover {
+  background: var(--cor-moldura);
 }
 
 .botao:disabled {
@@ -622,7 +633,7 @@ h2 {
   padding: var(--espaco-4);
 }
 
-.item-carrinho + .item-carrinho {
+.item-carrinho+.item-carrinho {
   border-top: 1px solid var(--cor-borda);
 }
 
